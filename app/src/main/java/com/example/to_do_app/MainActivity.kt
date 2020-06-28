@@ -6,12 +6,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.*
+import androidx.lifecycle.ViewModelProvider
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var item:ArrayList<String>
-    private lateinit var itemAdapter:ArrayAdapter<String>
+
     private lateinit var listview:ListView
     private lateinit var button: Button
+    private lateinit var taskViewModel: TaskViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,9 +24,9 @@ class MainActivity : AppCompatActivity() {
         button.setOnClickListener {
             addItem(it)
         }
-        item = ArrayList()
-        itemAdapter = ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,item)
-        listview.adapter = itemAdapter
+        taskViewModel = ViewModelProvider(this).get(TaskViewModel::class.java)
+        taskViewModel.itemAdapter = ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,taskViewModel.item)
+        listview.adapter = taskViewModel.itemAdapter
         ListViewlistener();
 
 
@@ -37,8 +38,8 @@ class MainActivity : AppCompatActivity() {
         listview.setOnItemClickListener{parent,view,position,id:Long->
             val context:Context = applicationContext
             Toast.makeText(context,"Item Removed",Toast.LENGTH_LONG).show()
-            item.removeAt(position)
-            itemAdapter.notifyDataSetChanged()
+            taskViewModel.item.removeAt(position)
+            taskViewModel.itemAdapter.notifyDataSetChanged()
 
 
         }
@@ -49,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         var info:EditText = findViewById(R.id.info)
         var text = info.text.toString()
         if(text != ""){
-            itemAdapter.add(text)
+            taskViewModel.itemAdapter.add(text)
             info.setText("")
         }
         else{
