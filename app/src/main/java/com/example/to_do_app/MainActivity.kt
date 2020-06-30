@@ -4,6 +4,9 @@ import android.annotation.SuppressLint
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import androidx.lifecycle.ViewModelProvider
@@ -28,6 +31,7 @@ class MainActivity : AppCompatActivity() {
         taskViewModel.itemAdapter = ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,taskViewModel.item)
         listview.adapter = taskViewModel.itemAdapter
         ListViewlistener();
+
 
 
 
@@ -58,4 +62,27 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater:MenuInflater = menuInflater
+        inflater.inflate(R.menu.menu,menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId){
+            R.id.clear->{
+                clearAll()
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun clearAll(): Boolean {
+        taskViewModel.item.clear()
+        taskViewModel.itemAdapter.notifyDataSetChanged()
+
+        return true
+    }
+
 }
